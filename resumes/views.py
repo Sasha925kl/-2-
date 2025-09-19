@@ -7,20 +7,30 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 def resume_create(request):
-    if request.method == 'POST':
-        form = ResumeForm(request.POST, request.FILES) 
-        if form.is_valid():
-            resume = form.save(commit=False)
-            resume.user = request.user  
-            resume.save()
-            return redirect('resume_list')
-    else:
-        form = ResumeForm()
-    return render(request, 'resumes/resume_create.html', {'form': form})
+    if request.method == "POST":
+        template_id = request.POST.get("template")
+        template = None
+        if template_id and template_id.isdigit():
+            template = ResumeTemplate.objects.filter(id=int(template_id)).first()
 
+        Resume.objects.create(
+            full_name=request.POST.get("full_name"),
+            email=request.POST.get("email"),
+            phone=request.POST.get("phone"),
+            education=request.POST.get("education"),
+            experience=request.POST.get("experience"),
+            skills=request.POST.get("skills"),
+            template=template,
+            photo=request.FILES.get("photo"),
+            user=request.user
+        )
+        return redirect("resume_list")
+
+    templates = ResumeTemplate.objects.all()
+    return render(request, "resumes/resume_create.html", {"templates": templates})
 
 def resume_list(request):
-    resumes = Resume.objects.all()
+    resumes = Resume.objects.filter(user=request.user)
     return render(request, 'resumes/resume_list.html', {'resumes': resumes})
 
 def resume_detail(request, pk):

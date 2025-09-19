@@ -84,7 +84,7 @@
             margin-top: 10px;
         }
 
-        /* ==== Шаблон Класичний ==== */
+        
         .template-classic .preview-header {
             background: linear-gradient(135deg, #6a11cb, #2575fc);
             color: white;
@@ -93,7 +93,7 @@
             font-family: "Segoe UI", sans-serif;
         }
 
-        /* ==== Шаблон Мінімалістичний ==== */
+        
         .template-minimal .preview-header {
             background: #222;
             color: #fff;
@@ -103,7 +103,7 @@
             border: 2px solid #000;
         }
 
-        /* ==== Шаблон Креативний ==== */
+        
         .template-creative .preview-header {
             background: linear-gradient(135deg, #ff416c, #ff4b2b);
             color: #fff;
@@ -124,7 +124,7 @@
 
 <div class="container py-5">
     <div class="row g-4">
-        <!-- Форма -->
+        
         <div class="col-lg-5">
             <div class="form-card">
                 <h3 class="mb-3 text-center text-primary">
@@ -171,10 +171,13 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">🖼 Оберіть шаблон:</label>
                         <div class="template-choice">
-                            <label><input type="radio" name="template" value="classic" onchange="applyTemplate(this.value)"> Класичний</label>
-                            <label><input type="radio" name="template" value="minimal" onchange="applyTemplate(this.value)"> Мінімалістичний</label>
-                            <label><input type="radio" name="template" value="creative" onchange="applyTemplate(this.value)"> Креативний</label>
-                        </div>
+                        {% for template in templates %}
+                            <label>
+                                <input type="radio" name="template" value="{{ template.id }}">
+                                {{ template.name }}
+                            </label>
+                        {% endfor %}
+                    </div>
                     </div>
 
                     <button type="submit" class="btn btn-gradient w-100 py-2">
