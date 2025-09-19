@@ -1,0 +1,241 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Створити резюме</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: url("https://images.unsplash.com/photo-1508780709619-79562169bc64?auto=format&fit=crop&w=1600&q=80") no-repeat center center fixed;
+            background-size: cover;
+            font-family: "Segoe UI", sans-serif;
+        }
+        .form-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 18px rgba(0,0,0,.3);
+            animation: fadeInUp 0.7s ease;
+        }
+        @keyframes fadeInUp {
+            from {opacity: 0; transform: translateY(40px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+        .form-control {
+            border-radius: 12px;
+            border: 2px solid #ced4da;
+            padding-left: 40px;
+            transition: 0.3s;
+        }
+        .form-control:focus {
+            border-color: #2575fc;
+            box-shadow: 0 0 8px rgba(37,117,252,0.6);
+        }
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            color: #6c757d;
+        }
+        .btn-gradient {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 12px;
+            transition: 0.4s;
+        }
+        .btn-gradient:hover {
+            transform: scale(1.05);
+            background: linear-gradient(45deg, #ff4b2b, #ff416c);
+        }
+        .preview-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 6px 16px rgba(0,0,0,.25);
+            transition: all 0.3s ease;
+        }
+        .preview-header {
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+        .preview-header h3 { margin: 0; }
+        .template-choice {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .template-choice label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .preview-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            margin-top: 10px;
+        }
+
+        /* ==== Шаблон Класичний ==== */
+        .template-classic .preview-header {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+        }
+        .template-classic .preview-card {
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        /* ==== Шаблон Мінімалістичний ==== */
+        .template-minimal .preview-header {
+            background: #222;
+            color: #fff;
+        }
+        .template-minimal .preview-card {
+            font-family: "Arial", sans-serif;
+            border: 2px solid #000;
+        }
+
+        /* ==== Шаблон Креативний ==== */
+        .template-creative .preview-header {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: #fff;
+        }
+        .template-creative .preview-card {
+            font-family: "Comic Sans MS", cursive;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'resume_list' %}">📑 Мої резюме</a>
+  </div>
+</nav>
+
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- Форма -->
+        <div class="col-lg-5">
+            <div class="form-card">
+                <h3 class="mb-3 text-center text-primary">
+                    <i class="bi bi-pencil-square"></i> Заповніть резюме
+                </h3>
+                <form method="post" enctype="multipart/form-data" id="resumeForm">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3 position-relative">
+                        <i class="bi bi-person input-icon"></i>
+                        <input type="text" name="full_name" class="form-control" placeholder="Ваше ім'я" oninput="updatePreview()">
+                    </div>
+
+                    <div class="mb-3 position-relative">
+                        <i class="bi bi-envelope input-icon"></i>
+                        <input type="email" name="email" class="form-control" placeholder="Ваш email" oninput="updatePreview()">
+                    </div>
+
+                    <div class="mb-3 position-relative">
+                        <i class="bi bi-phone input-icon"></i>
+                        <input type="text" name="phone" class="form-control" placeholder="Номер телефону" oninput="updatePreview()">
+                    </div>
+
+                    <div class="mb-3 position-relative">
+                        <i class="bi bi-mortarboard input-icon"></i>
+                        <textarea name="education" class="form-control" rows="2" placeholder="Освіта" oninput="updatePreview()"></textarea>
+                    </div>
+
+                    <div class="mb-3 position-relative">
+                        <i class="bi bi-briefcase input-icon"></i>
+                        <textarea name="experience" class="form-control" rows="2" placeholder="Досвід роботи" oninput="updatePreview()"></textarea>
+                    </div>
+
+                    <div class="mb-3 position-relative">
+                        <i class="bi bi-lightbulb input-icon"></i>
+                        <textarea name="skills" class="form-control" rows="2" placeholder="Ваші навички" oninput="updatePreview()"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">📷 Фото</label>
+                        <input type="file" name="photo" class="form-control" accept="image/*" onchange="previewPhoto(event)">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">🖼 Оберіть шаблон:</label>
+                        <div class="template-choice">
+                            <label><input type="radio" name="template" value="classic" onchange="applyTemplate(this.value)"> Класичний</label>
+                            <label><input type="radio" name="template" value="minimal" onchange="applyTemplate(this.value)"> Мінімалістичний</label>
+                            <label><input type="radio" name="template" value="creative" onchange="applyTemplate(this.value)"> Креативний</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient w-100 py-2">
+                        <i class="bi bi-save"></i> Зберегти резюме
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        
+        <div class="col-lg-7">
+            <div class="preview-card template-classic" id="preview">
+                <div class="preview-header">
+                    <h3 id="full_name_preview">Ім'я Прізвище</h3>
+                    <p id="email_preview">example@mail.com</p>
+                    <p id="phone_preview">+380 00 000 0000</p>
+                    <img id="photo_preview" class="preview-photo d-none">
+                </div>
+                <div class="p-3">
+                    <h6>🎓 Освіта</h6>
+                    <p id="education_preview">9 класів</p>
+                    <h6>💼 Досвід</h6>
+                    <p id="experience_preview">немає</p>
+                    <h6>✨ Навички</h6>
+                    <p id="skills_preview">спати</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updatePreview() {
+    document.getElementById('full_name_preview').innerText = document.querySelector('[name="full_name"]').value || "Ім'я Прізвище";
+    document.getElementById('email_preview').innerText = document.querySelector('[name="email"]').value || "example@mail.com";
+    document.getElementById('phone_preview').innerText = document.querySelector('[name="phone"]').value || "+380 00 000 0000";
+    document.getElementById('education_preview').innerText = document.querySelector('[name="education"]').value || "9 класів";
+    document.getElementById('experience_preview').innerText = document.querySelector('[name="experience"]').value || "немає";
+    document.getElementById('skills_preview').innerText = document.querySelector('[name="skills"]').value || "спати";
+}
+
+function previewPhoto(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.getElementById('photo_preview');
+            img.src = e.target.result;
+            img.classList.remove("d-none");
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+function applyTemplate(templateName) {
+    const preview = document.getElementById('preview');
+    preview.classList.remove('template-classic', 'template-minimal', 'template-creative');
+    preview.classList.add('template-' + templateName);
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

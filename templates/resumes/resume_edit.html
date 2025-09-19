@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if resume %}Редагувати{% else %}Створити{% endif %} резюме</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: url("https://images.unsplash.com/photo-1508780709619-79562169bc64?auto=format&fit=crop&w=1600&q=80") no-repeat center center fixed;
+            background-size: cover;          
+            min-height: 100vh;               
+            margin: 0;                        
+            display: flex;                    
+            justify-content: center;          
+            align-items: center;              
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        .resume-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            padding: 30px;
+            max-width: 700px;
+            width: 100%;
+            animation: fadeInUp 0.6s ease;
+        }
+        @keyframes fadeInUp {
+            from {opacity: 0; transform: translateY(50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+        .form-control {
+            border-radius: 12px;
+            padding-left: 40px;
+        }
+        .input-icon {
+            position: absolute;
+            top: 9px;
+            left: 12px;
+            color: #888;
+        }
+        .btn-gradient {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            border: none;
+            color: #fff;
+            border-radius: 12px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-gradient:hover {
+            transform: scale(1.05);
+            background: linear-gradient(45deg, #ff4b2b, #ff416c);
+        }
+        .back-link {
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+        .back-link i {
+            margin-right: 6px;
+        }
+        .title-icon {
+            font-size: 2rem;
+            color: #2575fc;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="resume-card">
+        <h2 class="mb-4 d-flex align-items-center">
+            <i class="bi bi-file-earmark-person title-icon"></i>
+            {% if resume %}Редагувати{% else %}Створити{% endif %} резюме
+        </h2>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            
+            {{ form.as_p }}
+
+            
+            <button type="submit" class="btn btn-gradient w-100 py-2">
+                <i class="bi bi-save"></i> Зберегти
+            </button>
+        </form>
+
+        
+        <a href="{% url 'resume_list' %}" class="back-link text-primary">
+            <i class="bi bi-arrow-left"></i> Назад до списку резюме
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
